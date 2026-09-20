@@ -1,0 +1,38 @@
+DATA CLEANING REPORT
+==================================================
+Raw dataset shape: 250 rows x 12 columns
+
+1. MISSING VALUES FOUND
+          missing_count  missing_pct
+Age                  48         19.2
+Cabin               202         80.8
+Embarked              1          0.4
+
+2. DUPLICATE RECORDS
+Full-row duplicates found: 0
+Duplicate PassengerId values found: 0
+
+3. DATA TYPE ISSUES IDENTIFIED
+- Survived, Pclass, Sex, Embarked were stored as generic int64/object
+  but are categorical variables, not free numbers/text.
+- Age was stored as float64 purely because of missing values mixed
+  with whole-number ages; cleaned version keeps float but rounds sensibly.
+- Fare and Age had no explicit range validation (e.g. negative/zero fares).
+
+4. INCONSISTENT / MESSY VALUES IDENTIFIED
+- Names with leading/trailing whitespace: 1
+- Unique Sex categories (after lowercasing): ['male', 'female']
+- Unique Embarked codes: ['S', 'C', 'Q'] (S=Southampton, C=Cherbourg, Q=Queenstown)
+- Rows with Fare == 0 (flagged as suspicious, kept but noted): 1
+
+5. CLEANING ACTIONS TAKEN
+- Trimmed whitespace in text columns (Name, Sex, Ticket, Cabin, Embarked).
+- Dropped exact duplicate rows: 0 removed.
+- Imputed missing Age using median Age within each Pclass+Sex group.
+- Imputed 1 missing Embarked values with the mode (most common port).
+- Cabin: created new boolean column 'HasCabinRecord'; filled missing Cabin with 'Unknown' instead of guessing a fake cabin (missingness here is meaningful, not random).
+- Converted Survived, Pclass, Sex, Embarked to proper categorical dtypes.
+- Standardized Sex to lowercase and Embarked to uppercase for consistency.
+- Filtered out any rows with negative Fare (data validation).
+
+Final cleaned dataset shape: 250 rows x 13 columns
